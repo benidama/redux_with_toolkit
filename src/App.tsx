@@ -3,12 +3,14 @@ import LandingPage from './pages/LandingPage';
 import NotFound from './pages/NotFound';
 import Navigation from './components/Navigation';
 import Login from './components/Login';
+import CreateAccount from './components/CreateAccount';
 
 const App = () => {
   return (
     <Router>
       <Routes>
         <Route path="/sign-in" element={<Login onLogin={async () => {}} />} />
+        <Route path="/create-account" element={<CreateAccount />} />
         <Route path="/*" element={
           <div>
             <Navigation />

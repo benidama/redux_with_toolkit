@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import Input from '../components/Input';
 import Button from '../components/Button';
 
@@ -75,6 +76,11 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
           <Button isLoading={isSubmitting}>Sign in</Button>
         </form>
+        <div className="text-center mt-4">
+          <Link to="/create-account" className="text-indigo-600 hover:text-indigo-500">
+            Don't have an account? Create one
+          </Link>
+        </div>
       </div>
     </div>
   );
