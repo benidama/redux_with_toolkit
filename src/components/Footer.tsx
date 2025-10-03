@@ -93,17 +93,21 @@ const Footer = () => {
         )}
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col md:bg-[#9894B1] p-2 md:p-0 sm:p-2 rounded-md sm:flex-row items-center sm:bg-amber-50 bg-amber-50 sm:gap-2 gap-2 md:gap-0 w-full md:max-w-[360px]"
+          className="flex flex-col sm:flex-row items-center gap-3 bg-white/10 backdrop-blur-sm p-3 rounded-lg w-full max-w-md"
         >
-          <Input
-            label="Email"
-            type="email"
-            required
-            placeholder="Enter your email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-          />
-          <Button type="submit">{loading ? 'Loading...' : 'Subscribe'}</Button>
+          <div className="flex-1">
+            <Input
+              label=""
+              type="email"
+              required
+              placeholder="Enter your email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+            />
+          </div>
+          <div className="sm:w-auto w-full">
+            <Button type="submit">{loading ? 'Loading...' : 'Subscribe'}</Button>
+          </div>
         </form>
       </div>
       <div className="text-center text-sm px-4">
