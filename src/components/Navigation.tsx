@@ -8,12 +8,13 @@ import {
   X,
   Moon,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const Navigation = () => {
   const [isChevronDown, setIsChevronDown] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [language, setLanguage] = useState('English');
+  const [isScrolled, setIsScrolled] = useState(false);
   const handleOpen = () => setIsChevronDown(!isChevronDown);
   const toggleMobile = () => setMobileOpen(!mobileOpen);
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -22,8 +23,18 @@ const Navigation = () => {
     setIsDarkMode(!isDarkMode);
   };
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <nav className="w-full bg-[#F8F9FA] shadow-md px-4 py-3 font-poppins">
+    <nav className={`fixed top-0 w-full z-50 px-4 py-3 font-poppins transition-all duration-300 ${
+      isScrolled ? 'bg-white/95 backdrop-blur-md shadow-lg' : 'bg-[#F8F9FA] shadow-md'
+    }`}>
       <div className="flex justify-between items-center max-w-7xl mx-auto">
         <h1 className="font-bold text-xl md:text-2xl cursor-pointer">
           SALON FLOW

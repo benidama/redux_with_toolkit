@@ -27,7 +27,7 @@ const Landing = () => {
   }, [currentImage]);
 
   return (
-    <div className="bg-white container p-5 mx-auto px-4 md:px-8 lg:px-32 font-poppins">
+    <div className="bg-white container p-5 mx-auto px-4 md:px-8 lg:px-32 font-poppins pt-20">
       <div className="flex flex-col  gap-5 pb-10">
         {/* Welcome Images */}
         <div className="w-full h-[350px] md:h-[500px] rounded-lg overflow-hidden flex justify-center items-center relative">
