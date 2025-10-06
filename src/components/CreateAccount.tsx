@@ -1,10 +1,16 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import Input from './Input';
 import Button from './Button';
 import GoogleSignInButton from './GoogleSignInButton';
+import { useRegisterMutation } from '../app/api/authApi';
+import { setCredentials } from '../app/feature/authSlice';
 
 const CreateAccount = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [register, { isLoading }] = useRegisterMutation();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -12,14 +18,26 @@ const CreateAccount = () => {
     password: '',
     confirmPassword: ''
   });
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleChange = (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({ ...prev, [field]: event.target.value }));
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    console.log('Create account:', formData);
+    if (formData.password !== formData.confirmPassword) {
+      setErrors({ confirmPassword: 'Passwords do not match' });
+      return;
+    }
+    
+    try {
+      const result = await register(formData).unwrap();
+      dispatch(setCredentials(result));
+      navigate('/');
+    } catch (err: any) {
+      setErrors({ general: err.data?.message || 'Registration failed' });
+    }
   };
 
   return (
@@ -36,6 +54,7 @@ const CreateAccount = () => {
             required
             value={formData.name}
             onChange={handleChange('name')}
+            error={errors.name}
           />
           <Input
             label="Email"
@@ -43,6 +62,7 @@ const CreateAccount = () => {
             required
             value={formData.email}
             onChange={handleChange('email')}
+            error={errors.email}
           />
           <Input
             label="Phone Number"
@@ -52,6 +72,7 @@ const CreateAccount = () => {
             required
             value={formData.phone}
             onChange={handleChange('phone')}
+            error={errors.phone}
           />
           <Input
             label="Password"
@@ -60,6 +81,7 @@ const CreateAccount = () => {
             showToggle
             value={formData.password}
             onChange={handleChange('password')}
+            error={errors.password}
           />
           <Input
             label="Confirm Password"
@@ -68,8 +90,10 @@ const CreateAccount = () => {
             showToggle
             value={formData.confirmPassword}
             onChange={handleChange('confirmPassword')}
+            error={errors.confirmPassword}
           />
-          <Button type="submit">Create Account</Button>
+          {errors.general && <div className="text-red-600 text-sm">{errors.general}</div>}
+          <Button type="submit" isLoading={isLoading}>Create Account</Button>
         </form>
         
         <div className="relative my-6">

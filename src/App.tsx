@@ -9,7 +9,7 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/sign-in" element={<Login onLogin={async () => {}} />} />
+        <Route path="/sign-in" element={<Login />} />
         <Route path="/create-account" element={<CreateAccount />} />
         <Route path="/*" element={
           <div>

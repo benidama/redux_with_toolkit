@@ -1,21 +1,31 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import GoogleSignInButton from '../components/GoogleSignInButton';
+import { useLoginMutation } from '../app/api/authApi';
+import { setCredentials } from '../app/feature/authSlice';
 
-interface LoginProps {
-  onLogin: (phone: string, password: string) => Promise<void>;
-}
-
-const Login: React.FC<LoginProps> = ({ onLogin }) => {
+const Login: React.FC = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [login, { isLoading }] = useLoginMutation();
+  const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
-  const [errors, setErrors] = useState<{ phone?: string; password?: string }>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState<{ email?: string; phone?: string; password?: string }>({});
+
 
   const validate = (): boolean => {
     const errs: typeof errors = {};
+    
+    if (!email) {
+      errs.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errs.email = 'Invalid email format';
+    }
+    
     const phonePattern = /^\+?[0-9\s\-()]{6,20}$/;
     if (!phone) {
       errs.phone = 'Phone is required';
@@ -37,15 +47,10 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
     e.preventDefault();
     if (!validate()) return;
 
-    setIsSubmitting(true);
-    try {
-      await onLogin(phone.trim(), password);
-      // Maybe clear fields or show some success UI
-    } catch (err: any) {
-      setErrors({ password: err.message || 'Login failed' });
-    } finally {
-      setIsSubmitting(false);
-    }
+    // Mock login - replace with actual API call when backend is ready
+    const mockResult = { user: { email: email.trim(), phone: phone.trim() }, token: 'mock-token' };
+    dispatch(setCredentials(mockResult));
+    navigate('/');
   };
 
   return (
@@ -54,6 +59,16 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
         <h2 className="text-2xl font-semibold text-center mb-6">Sign in</h2>
         
         <form onSubmit={handleSubmit} className="space-y-5">
+          <Input
+            label="Email"
+            type="email"
+            autoComplete="email"
+            placeholder="Enter your email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            error={errors.email}
+          />
+          
           <Input
             label="Phone number"
             type="tel"
@@ -76,7 +91,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
             showToggle
           />
 
-          <Button isLoading={isSubmitting}>Sign in</Button>
+          <Button isLoading={isLoading}>Sign in</Button>
         </form>
         
         <div className="relative my-6">
