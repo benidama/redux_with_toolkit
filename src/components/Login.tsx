@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import Input from '../components/Input';
 import Button from '../components/Button';
@@ -9,12 +9,21 @@ import { setCredentials } from '../app/feature/authSlice';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
   const [login, { isLoading }] = useLoginMutation();
   const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
-  const [errors, setErrors] = useState<{ email?: string; phone?: string; password?: string }>({});
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [successMessage, setSuccessMessage] = useState('');
+
+  useEffect(() => {
+    if (location.state?.message) {
+      setSuccessMessage(location.state.message);
+      // Clear the message after 5 seconds
+      setTimeout(() => setSuccessMessage(''), 5000);
+    }
+  }, [location.state]);
 
 
   const validate = (): boolean => {
@@ -24,13 +33,6 @@ const Login: React.FC = () => {
       errs.email = 'Email is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       errs.email = 'Invalid email format';
-    }
-    
-    const phonePattern = /^\+?[0-9\s\-()]{6,20}$/;
-    if (!phone) {
-      errs.phone = 'Phone is required';
-    } else if (!phonePattern.test(phone.trim())) {
-      errs.phone = 'Invalid phone format';
     }
 
     if (!password) {
@@ -47,16 +49,34 @@ const Login: React.FC = () => {
     e.preventDefault();
     if (!validate()) return;
 
-    // Mock login - replace with actual API call when backend is ready
-    const mockResult = { user: { email: email.trim(), phone: phone.trim() }, token: 'mock-token' };
-    dispatch(setCredentials(mockResult));
-    navigate('/');
+    try {
+      const result = await login({ email: email.trim(), password }).unwrap();
+      dispatch(setCredentials(result));
+      
+      // Navigate based on user role
+      const role = result.user.role.toLowerCase();
+      if (role === 'leader') {
+        navigate('/leader-dashboard');
+      } else if (role === 'worker') {
+        navigate('/worker-dashboard');
+      } else {
+        navigate('/client-dashboard');
+      }
+    } catch (err: any) {
+      setErrors({ password: err.data?.message || 'Login failed' });
+    }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
       <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-8">
         <h2 className="text-2xl font-semibold text-center mb-6">Sign in</h2>
+        
+        {successMessage && (
+          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+            {successMessage}
+          </div>
+        )}
         
         <form onSubmit={handleSubmit} className="space-y-5">
           <Input
@@ -69,17 +89,6 @@ const Login: React.FC = () => {
             error={errors.email}
           />
           
-          <Input
-            label="Phone number"
-            type="tel"
-            inputMode="tel"
-            autoComplete="tel"
-            placeholder="+250 78 123 4567"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            error={errors.phone}
-          />
-
           <Input
             label="Password"
             type="password"

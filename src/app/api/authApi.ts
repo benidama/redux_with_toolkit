@@ -2,7 +2,6 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export interface LoginRequest {
   email: string;
-  phone: string;
   password: string;
 }
 
@@ -11,7 +10,16 @@ export interface RegisterRequest {
   email: string;
   phone: string;
   password: string;
-  confirmPassword: string;
+  role: string;
+}
+
+export interface VerifyOtpRequest {
+  email: string;
+  otp: string;
+}
+
+export interface ResendOtpRequest {
+  email: string;
 }
 
 export interface AuthResponse {
@@ -20,6 +28,7 @@ export interface AuthResponse {
     name: string;
     email: string;
     phone: string;
+    role: string;
   };
   token: string;
 }
@@ -28,6 +37,7 @@ export const authApi = createApi({
   reducerPath: 'authApi',
   baseQuery: fetchBaseQuery({
     baseUrl: 'http://localhost:3000/api/auth',
+    credentials: 'include',
   }),
   endpoints: (builder) => ({
     login: builder.mutation<AuthResponse, LoginRequest>({
@@ -37,14 +47,28 @@ export const authApi = createApi({
         body: credentials,
       }),
     }),
-    register: builder.mutation<AuthResponse, RegisterRequest>({
+    register: builder.mutation<{ message: string }, RegisterRequest>({
       query: (userData) => ({
         url: '/register',
         method: 'POST',
         body: userData,
       }),
     }),
+    verifyOtp: builder.mutation<{ message: string }, VerifyOtpRequest>({
+      query: (data) => ({
+        url: '/verify-otp',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+    resendOtp: builder.mutation<{ message: string }, ResendOtpRequest>({
+      query: (data) => ({
+        url: '/resend-otp',
+        method: 'POST',
+        body: data,
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation, useRegisterMutation } = authApi;
+export const { useLoginMutation, useRegisterMutation, useVerifyOtpMutation, useResendOtpMutation } = authApi;
