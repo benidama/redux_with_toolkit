@@ -1,15 +1,12 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import Input from './Input';
 import Button from './Button';
 import GoogleSignInButton from './GoogleSignInButton';
 import { useRegisterMutation } from '../app/api/authApi';
-import { setCredentials } from '../app/feature/authSlice';
 
 const CreateAccount = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const [register, { isLoading }] = useRegisterMutation();
   const [formData, setFormData] = useState({
     name: '',
