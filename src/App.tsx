@@ -4,6 +4,8 @@ import NotFound from './pages/NotFound';
 import Navigation from './components/Navigation';
 import Login from './components/Login';
 import CreateAccount from './components/CreateAccount';
+import ForgotPassword from './components/ForgotPassword';
+import ResetPassword from './components/ResetPassword';
 import OtpVerification from './components/OtpVerification';
 import ClientDashboard from './pages/ClientDashboard';
 import WorkerDashboard from './pages/WorkerDashboard';
@@ -15,6 +17,8 @@ const App = () => {
       <Routes>
         <Route path="/sign-in" element={<Login />} />
         <Route path="/create-account" element={<CreateAccount />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/verify-otp" element={<OtpVerification />} />
         <Route path="/client-dashboard" element={<ClientDashboard />} />
         <Route path="/worker-dashboard" element={<WorkerDashboard />} />

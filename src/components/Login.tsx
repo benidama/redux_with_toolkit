@@ -117,8 +117,11 @@ const Login: React.FC = () => {
           onClick={() => console.log('Google sign in clicked')}
         />
         
-        <div className="text-center mt-4">
-          <Link to="/create-account" className="text-indigo-600 hover:text-indigo-500">
+        <div className="text-center mt-4 space-y-2">
+          <Link to="/forgot-password" className="block text-indigo-600 hover:text-indigo-500">
+            Forgot password?
+          </Link>
+          <Link to="/create-account" className="block text-indigo-600 hover:text-indigo-500">
             Don't have an account? Create one
           </Link>
         </div>
