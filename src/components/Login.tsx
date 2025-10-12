@@ -114,7 +114,7 @@ const Login: React.FC = () => {
         
         <GoogleSignInButton 
           text="Sign in with Google" 
-          onClick={() => console.log('Google sign in clicked')}
+          isRegister={false}
         />
         
         <div className="text-center mt-4 space-y-2">

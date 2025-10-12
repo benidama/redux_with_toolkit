@@ -132,7 +132,7 @@ const CreateAccount = () => {
         
         <GoogleSignInButton 
           text="Sign up with Google" 
-          onClick={() => console.log('Google sign up clicked')}
+          isRegister={true}
         />
         
         <div className="text-center mt-4">

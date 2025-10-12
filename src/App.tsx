@@ -7,6 +7,7 @@ import CreateAccount from './components/CreateAccount';
 import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword';
 import OtpVerification from './components/OtpVerification';
+import GoogleCallback from './components/GoogleCallback';
 import ClientDashboard from './pages/ClientDashboard';
 import WorkerDashboard from './pages/WorkerDashboard';
 import LeaderDashboard from './pages/LeaderDashboard';
@@ -20,6 +21,7 @@ const App = () => {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/verify-otp" element={<OtpVerification />} />
+        <Route path="/auth/google/callback" element={<GoogleCallback />} />
         <Route path="/client-dashboard" element={<ClientDashboard />} />
         <Route path="/worker-dashboard" element={<WorkerDashboard />} />
         <Route path="/leader-dashboard" element={<LeaderDashboard />} />

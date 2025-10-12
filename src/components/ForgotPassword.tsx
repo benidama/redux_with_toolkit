@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Input from './Input';
 import Button from './Button';
+import { useRequestPasswordResetMutation } from '../app/api/authApi';
 
 const ForgotPassword: React.FC = () => {
   const navigate = useNavigate();
+  const [requestPasswordReset, { isLoading }] = useRequestPasswordResetMutation();
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,12 +21,12 @@ const ForgotPassword: React.FC = () => {
       return;
     }
 
-    setIsLoading(true);
-    // Mock OTP send - replace with actual API call
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      await requestPasswordReset({ email }).unwrap();
       navigate('/reset-password', { state: { email } });
-    }, 1000);
+    } catch (err: any) {
+      setError(err.data?.message || 'Failed to send reset email');
+    }
   };
 
   return (

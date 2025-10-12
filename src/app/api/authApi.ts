@@ -22,6 +22,19 @@ export interface ResendOtpRequest {
   email: string;
 }
 
+export interface RequestPasswordResetRequest {
+  email: string;
+}
+
+export interface ResetPasswordRequest {
+  token: string;
+  password: string;
+}
+
+export interface GoogleAuthRequest {
+  token: string;
+}
+
 export interface AuthResponse {
   user: {
     id: string;
@@ -68,7 +81,41 @@ export const authApi = createApi({
         body: data,
       }),
     }),
+    requestPasswordReset: builder.mutation<{ message: string }, RequestPasswordResetRequest>({
+      query: (data) => ({
+        url: '/request-password-reset',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+    resetPassword: builder.mutation<{ message: string }, ResetPasswordRequest>({
+      query: (data) => ({
+        url: '/reset-password',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+    googleLogin: builder.mutation<AuthResponse, GoogleAuthRequest>({
+      query: (data) => ({
+        url: '/google-login',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+    googleRegister: builder.mutation<AuthResponse, GoogleAuthRequest>({
+      query: (data) => ({
+        url: '/google-register',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+    googleAuth: builder.query<string, void>({
+      query: () => ({
+        url: '/google',
+        method: 'GET',
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation, useRegisterMutation, useVerifyOtpMutation, useResendOtpMutation } = authApi;
+export const { useLoginMutation, useRegisterMutation, useVerifyOtpMutation, useResendOtpMutation, useRequestPasswordResetMutation, useResetPasswordMutation, useGoogleLoginMutation, useGoogleRegisterMutation, useGoogleAuthQuery } = authApi;

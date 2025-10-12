@@ -2,34 +2,35 @@ import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Input from './Input';
 import Button from './Button';
+import { useResetPasswordMutation } from '../app/api/authApi';
 
 const ResetPassword: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const email = location.state?.email || '';
+  const [resetPassword, { isLoading }] = useResetPasswordMutation();
   
-  const [otp, setOtp] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [errors, setErrors] = useState<{ otp?: string; newPassword?: string }>({});
-  const [isLoading, setIsLoading] = useState(false);
+  const [token, setToken] = useState('');
+  const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState<{ token?: string; password?: string }>({});
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const errs: typeof errors = {};
     
-    if (!otp) errs.otp = 'OTP is required';
-    if (!newPassword) errs.newPassword = 'New password is required';
-    else if (newPassword.length < 6) errs.newPassword = 'Password must be at least 6 characters';
+    if (!token) errs.token = 'Reset token is required';
+    if (!password) errs.password = 'New password is required';
+    else if (password.length < 6) errs.password = 'Password must be at least 6 characters';
     
     setErrors(errs);
     if (Object.keys(errs).length > 0) return;
 
-    setIsLoading(true);
-    // Mock password reset - replace with actual API call
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      await resetPassword({ token, password }).unwrap();
       navigate('/sign-in');
-    }, 1000);
+    } catch (err: any) {
+      setErrors({ token: err.data?.message || 'Failed to reset password' });
+    }
   };
 
   return (
@@ -46,21 +47,21 @@ const ResetPassword: React.FC = () => {
           />
           
           <Input
-            label="OTP"
+            label="Reset Token"
             type="text"
-            placeholder="Enter OTP"
-            value={otp}
-            onChange={(e) => setOtp(e.target.value)}
-            error={errors.otp}
+            placeholder="Enter reset token"
+            value={token}
+            onChange={(e) => setToken(e.target.value)}
+            error={errors.token}
           />
           
           <Input
             label="New Password"
             type="password"
             placeholder="Enter new password"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            error={errors.newPassword}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            error={errors.password}
             showToggle
           />
           
