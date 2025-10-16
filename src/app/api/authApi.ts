@@ -49,48 +49,48 @@ export interface AuthResponse {
 export const authApi = createApi({
   reducerPath: 'authApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:3000/api/auth',
+    baseUrl: 'http://localhost:3000',
     credentials: 'include',
   }),
   endpoints: (builder) => ({
     login: builder.mutation<AuthResponse, LoginRequest>({
       query: (credentials) => ({
-        url: '/login',
+        url: '/api/auth/login',
         method: 'POST',
         body: credentials,
       }),
     }),
     register: builder.mutation<{ message: string }, RegisterRequest>({
       query: (userData) => ({
-        url: '/register',
+        url: '/api/auth/register',
         method: 'POST',
         body: userData,
       }),
     }),
     verifyOtp: builder.mutation<{ message: string }, VerifyOtpRequest>({
       query: (data) => ({
-        url: '/verify-otp',
+        url: '/api/auth/verify-otp',
         method: 'POST',
         body: data,
       }),
     }),
     resendOtp: builder.mutation<{ message: string }, ResendOtpRequest>({
       query: (data) => ({
-        url: '/resend-otp',
+        url: '/api/auth/resend-otp',
         method: 'POST',
         body: data,
       }),
     }),
     requestPasswordReset: builder.mutation<{ message: string }, RequestPasswordResetRequest>({
       query: (data) => ({
-        url: '/request-password-reset',
+        url: '/api/auth/request-password-reset',
         method: 'POST',
         body: data,
       }),
     }),
     resetPassword: builder.mutation<{ message: string }, ResetPasswordRequest>({
       query: (data) => ({
-        url: '/reset-password',
+        url: '/api/auth/reset-password',
         method: 'POST',
         body: data,
       }),
