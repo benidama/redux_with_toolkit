@@ -11,6 +11,7 @@ import GoogleCallback from './components/GoogleCallback';
 import ClientDashboard from './pages/ClientDashboard';
 import WorkerDashboard from './pages/WorkerDashboard';
 import LeaderDashboard from './pages/LeaderDashboard';
+import ImageManager from './components/ImageManager';
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
         <Route path="/client-dashboard" element={<ClientDashboard />} />
         <Route path="/worker-dashboard" element={<WorkerDashboard />} />
         <Route path="/leader-dashboard" element={<LeaderDashboard />} />
+        <Route path="/images" element={<ImageManager />} />
         <Route path="/*" element={
           <div>
             <Navigation />

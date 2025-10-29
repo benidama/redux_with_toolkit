@@ -3,6 +3,8 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 export interface UploadedImage {
   url: string;
   filename: string;
+  objectUrl?: string;
+  size?: number;
 }
 
 export interface UploadImageResponse {

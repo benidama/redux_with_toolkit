@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useGetAllPostsQuery, useDeletePostMutation } from '../app/api/uploadApi';
+import ImageDisplay from './ImageDisplay';
 
 const PostsList: React.FC = () => {
   const { data: postsData, isLoading, error } = useGetAllPostsQuery();
@@ -21,6 +22,8 @@ const PostsList: React.FC = () => {
   if (error) return <div className="text-center py-4 text-red-500">Error loading posts</div>;
 
   const posts = postsData?.posts || [];
+  
+
 
   return (
     <div className="space-y-4">
@@ -28,8 +31,9 @@ const PostsList: React.FC = () => {
       {posts.length === 0 ? (
         <p className="text-gray-500 text-center py-8">No posts available</p>
       ) : (
-        posts.map((post) => (
-          <div key={post.id} className="bg-white rounded-lg shadow-md p-6 border">
+        posts.map((post, postIndex) => {
+          return (
+          <div key={post.id || postIndex} className="bg-white rounded-lg shadow-md p-6 border">
             <div className="flex justify-between items-start mb-3">
               <h4 className="text-xl font-semibold text-gray-800">{post.title}</h4>
               <button
@@ -41,27 +45,31 @@ const PostsList: React.FC = () => {
             </div>
             <p className="text-gray-600 mb-4">{post.content}</p>
             {post.images && post.images.length > 0 && (
-              <div className="grid grid-cols-3 gap-2 mb-3">
-                {post.images.map((image, index) => (
-                  <img
-                    key={index}
-                    src={image.url}
-                    alt={image.filename || `Image ${index + 1}`}
-                    className="w-full h-20 object-cover rounded border cursor-pointer hover:opacity-80 transition-opacity"
-                    onClick={() => setSelectedImage(image.url)}
-                    onError={(e) => {
-                      console.error('Image load error:', image.url);
-                      e.currentTarget.style.display = 'none';
-                    }}
-                  />
-                ))}
+              <div className="mb-3">
+                <p className="text-sm text-gray-600 mb-2">Images ({post.images.length}):</p>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {post.images.map((image, index) => {
+                    const imageUrl = typeof image === 'string' ? image : image.url;
+                    const imageName = typeof image === 'string' ? `Image ${index + 1}` : (image.filename || `Image ${index + 1}`);
+                    return (
+                      <ImageDisplay
+                        key={`${post.id || postIndex}-image-${index}`}
+                        src={imageUrl}
+                        alt={imageName}
+                        className="w-full h-24 object-cover rounded-lg border-2 border-gray-200 cursor-pointer hover:border-blue-400 transition-all"
+                        onClick={() => setSelectedImage(imageUrl)}
+                      />
+                    );
+                  })}
+                </div>
               </div>
             )}
             <p className="text-sm text-gray-400">
               Created: {new Date(post.createdAt).toLocaleDateString()}
             </p>
           </div>
-        ))
+        );
+        })
       )}
       
       {selectedImage && (
