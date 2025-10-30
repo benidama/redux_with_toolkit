@@ -43,9 +43,11 @@ const CreatePost: React.FC<CreatePostProps> = ({ onClose }) => {
       const fileInput = document.getElementById('post-images') as HTMLInputElement;
       if (fileInput) fileInput.value = '';
       onClose();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Post creation failed:', error);
-      alert('Post creation failed. Please try again.');
+      console.error('Error details:', error.data);
+      const errorMessage = error.data?.message || error.data?.error || 'Post creation failed. Please try again.';
+      alert(errorMessage);
     }
   };
 

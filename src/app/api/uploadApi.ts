@@ -43,6 +43,7 @@ export const uploadApi = createApi({
     credentials: 'include',
     prepareHeaders: (headers, { endpoint }) => {
       const token = localStorage.getItem('token');
+      console.log('Token from localStorage:', token ? 'Token exists' : 'No token found');
       if (token) {
         headers.set('authorization', `Bearer ${token}`);
       }
