@@ -7,13 +7,24 @@ const PostsList: React.FC = () => {
   const [deletePost] = useDeletePostMutation();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-  const handleDelete = async (postId: string) => {
+  const handleDelete = async (post: any) => {
+    const postId = post.id || post._id;
+    
+    if (!postId) {
+      alert('Post ID not found. Cannot delete post.');
+      return;
+    }
+    
     if (window.confirm('Are you sure you want to delete this post?')) {
       try {
         await deletePost(postId).unwrap();
-      } catch (error) {
+      } catch (error: any) {
         console.error('Delete failed:', error);
-        alert('Failed to delete post. Please try again.');
+        if (error.status === 403) {
+          alert('You do not have permission to delete this post.');
+        } else {
+          alert('Failed to delete post. Please try again.');
+        }
       }
     }
   };
@@ -32,12 +43,13 @@ const PostsList: React.FC = () => {
         <p className="text-gray-500 text-center py-8">No posts available</p>
       ) : (
         posts.map((post, postIndex) => {
+          const postId = post.id || post._id;
           return (
-          <div key={post.id || postIndex} className="bg-white rounded-lg shadow-md p-6 border">
+          <div key={postId || postIndex} className="bg-white rounded-lg shadow-md p-6 border">
             <div className="flex justify-between items-start mb-3">
               <h4 className="text-xl font-semibold text-gray-800">{post.title}</h4>
               <button
-                onClick={() => handleDelete(post.id)}
+                onClick={() => handleDelete(post)}
                 className="text-red-500 hover:text-red-700 text-sm font-medium"
               >
                 Delete
@@ -53,7 +65,7 @@ const PostsList: React.FC = () => {
                     const imageName = typeof image === 'string' ? `Image ${index + 1}` : (image.filename || `Image ${index + 1}`);
                     return (
                       <ImageDisplay
-                        key={`${post.id || postIndex}-image-${index}`}
+                        key={`${postId || postIndex}-image-${index}`}
                         src={imageUrl}
                         alt={imageName}
                         className="w-full h-24 object-cover rounded-lg border-2 border-gray-200 cursor-pointer hover:border-blue-400 transition-all"
