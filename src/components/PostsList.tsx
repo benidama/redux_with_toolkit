@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { useGetAllPostsQuery, useDeletePostMutation } from '../app/api/uploadApi';
+import { useGetAllPostsQuery, useDeletePostMutation, Post } from '../app/api/uploadApi';
 import ImageDisplay from './ImageDisplay';
+import EditPost from './EditPost';
 
 const PostsList: React.FC = () => {
   const { data: postsData, isLoading, error } = useGetAllPostsQuery();
   const [deletePost] = useDeletePostMutation();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [editingPost, setEditingPost] = useState<Post | null>(null);
 
   const handleDelete = async (post: any) => {
     const postId = post.id || post._id;
@@ -48,12 +50,20 @@ const PostsList: React.FC = () => {
           <div key={postId || postIndex} className="bg-white rounded-lg shadow-md p-6 border">
             <div className="flex justify-between items-start mb-3">
               <h4 className="text-xl font-semibold text-gray-800">{post.title}</h4>
-              <button
-                onClick={() => handleDelete(post)}
-                className="text-red-500 hover:text-red-700 text-sm font-medium"
-              >
-                Delete
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setEditingPost(post)}
+                  className="text-blue-500 hover:text-blue-700 text-sm font-medium"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => handleDelete(post)}
+                  className="text-red-500 hover:text-red-700 text-sm font-medium"
+                >
+                  Delete
+                </button>
+              </div>
             </div>
             <p className="text-gray-600 mb-4">{post.content}</p>
             {post.images && post.images.length > 0 && (
@@ -96,6 +106,13 @@ const PostsList: React.FC = () => {
             onClick={(e) => e.stopPropagation()}
           />
         </div>
+      )}
+      
+      {editingPost && (
+        <EditPost
+          post={editingPost}
+          onClose={() => setEditingPost(null)}
+        />
       )}
     </div>
   );
