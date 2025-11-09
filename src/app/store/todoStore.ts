@@ -3,6 +3,7 @@ import personReducer from "../feature/todoslice"
 import authReducer from '../feature/authSlice';
 import { authApi } from '../api/authApi';
 import { uploadApi } from '../api/uploadApi';
+import type { AuthState } from '../feature/authSlice';
 
 // Configure the Redux store
 export const personStore = configureStore({

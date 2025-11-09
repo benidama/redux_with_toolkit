@@ -31,10 +31,17 @@ const ClientDashboard = () => {
               </button>
             </div>
           </div>
-          <p className="text-gray-600 mb-4">Welcome, {user?.name}!</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-            <p><strong>Email:</strong> {user?.email}</p>
-            <p><strong>Phone:</strong> {user?.phone}</p>
+          <div className="flex items-center gap-4 mb-4">
+            <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">
+              <span className="text-gray-500 text-xs">Profile</span>
+            </div>
+            <div>
+              <p className="text-gray-600">Welcome, {user?.name}!</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm mt-2">
+                <p><strong>Email:</strong> {user?.email}</p>
+                <p><strong>Phone:</strong> {user?.phone}</p>
+              </div>
+            </div>
           </div>
         </div>
 

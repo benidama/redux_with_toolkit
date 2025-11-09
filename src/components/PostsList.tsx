@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useGetAllPostsQuery, useDeletePostMutation, Post } from '../app/api/uploadApi';
+import { useGetAllPostsQuery, useDeletePostMutation, type Post } from '../app/api/uploadApi';
 import ImageDisplay from './ImageDisplay';
 import EditPost from './EditPost';
 
@@ -39,12 +39,13 @@ const PostsList: React.FC = () => {
 
 
   return (
-    <div className="space-y-4">
+    <div>
       <h3 className="text-lg font-semibold mb-4">All Posts</h3>
       {posts.length === 0 ? (
         <p className="text-gray-500 text-center py-8">No posts available</p>
       ) : (
-        posts.map((post, postIndex) => {
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-4">
+        {posts.map((post, postIndex) => {
           const postId = post.id || post._id;
           return (
           <div key={postId || postIndex} className="bg-white rounded-lg shadow-md p-6 border">
@@ -69,7 +70,7 @@ const PostsList: React.FC = () => {
             {post.images && post.images.length > 0 && (
               <div className="mb-3">
                 <p className="text-sm text-gray-600 mb-2">Images ({post.images.length}):</p>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {post.images.map((image, index) => {
                     const imageUrl = typeof image === 'string' ? image : image.url;
                     const imageName = typeof image === 'string' ? `Image ${index + 1}` : (image.filename || `Image ${index + 1}`);
@@ -78,7 +79,7 @@ const PostsList: React.FC = () => {
                         key={`${postId || postIndex}-image-${index}`}
                         src={imageUrl}
                         alt={imageName}
-                        className="w-full h-24 object-cover rounded-lg border-2 border-gray-200 cursor-pointer hover:border-blue-400 transition-all"
+                        className="w-52 h-32 object-cover rounded-lg border-2 border-gray-200 cursor-pointer hover:border-blue-400 transition-all"
                         onClick={() => setSelectedImage(imageUrl)}
                       />
                     );
@@ -91,7 +92,8 @@ const PostsList: React.FC = () => {
             </p>
           </div>
         );
-        })
+        })}
+        </div>
       )}
       
       {selectedImage && (

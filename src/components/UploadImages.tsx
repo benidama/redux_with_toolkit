@@ -7,10 +7,12 @@ interface UploadedImage {
 }
 
 interface UploadImagesProps {
+  type?: string;
   onClose: () => void;
+  onImageUploaded?: (imageUrl: string) => void;
 }
 
-const UploadImages: React.FC<UploadImagesProps> = ({ onClose }) => {
+const UploadImages: React.FC<UploadImagesProps> = ({ type, onClose, onImageUploaded }) => {
   const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
   const [uploadImages, { isLoading }] = useUploadMultipleImagesMutation();
@@ -33,6 +35,9 @@ const UploadImages: React.FC<UploadImagesProps> = ({ onClose }) => {
     try {
       const result = await uploadImages(formData).unwrap();
       setUploadedImages(result.images);
+      if (type === 'profile' && result.images.length > 0 && onImageUploaded) {
+        onImageUploaded(result.images[0].url);
+      }
       setSelectedFiles(null);
       const fileInput = document.getElementById('image-upload') as HTMLInputElement;
       if (fileInput) fileInput.value = '';
@@ -45,7 +50,9 @@ const UploadImages: React.FC<UploadImagesProps> = ({ onClose }) => {
   return (
     <div className="bg-white p-6 rounded-lg shadow-lg max-w-2xl mx-auto mt-5">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-xl font-semibold text-gray-800">Upload Images</h3>
+        <h3 className="text-xl font-semibold text-gray-800">
+          Upload {type ? `${type.charAt(0).toUpperCase() + type.slice(1)} ` : ''}Images
+        </h3>
         <button
           onClick={onClose}
           className="text-gray-500 hover:text-gray-700 text-xl font-bold"

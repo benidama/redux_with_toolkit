@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { RootState } from '../app/store/todoStore';
 import { logout } from '../app/feature/authSlice';
 import CreatePost from '../components/CreatePost';
@@ -15,6 +15,19 @@ const LeaderDashboard = () => {
   const [showCreatePost, setShowCreatePost] = useState(false);
   const [showUploadProfile, setShowUploadProfile] = useState(false);
   const [showUploadPost, setShowUploadPost] = useState(false);
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    const savedProfileImage = localStorage.getItem('profileImage');
+    if (savedProfileImage) {
+      setProfileImage(savedProfileImage);
+    }
+  }, []);
+
+  const handleProfileImageUpdate = (imageUrl: string) => {
+    setProfileImage(imageUrl);
+    localStorage.setItem('profileImage', imageUrl);
+  };
 
   const handleLogout = () => {
     dispatch(logout());
@@ -39,10 +52,24 @@ const LeaderDashboard = () => {
               </button>
             </div>
           </div>
-          <p className="text-gray-600 mb-4">Welcome, {user?.name}!</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-            <p><strong>Email:</strong> {user?.email}</p>
-            <p><strong>Phone:</strong> {user?.phone}</p>
+          <div className="flex items-center gap-4 mb-4">
+            <button 
+              onClick={() => setShowUploadProfile(true)}
+              className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 transition-colors cursor-pointer overflow-hidden"
+            >
+              {profileImage ? (
+                <img src={profileImage} alt="Profile" className="w-full h-full object-cover rounded-full" />
+              ) : (
+                <span className="text-gray-500 text-xs">Profile</span>
+              )}
+            </button>
+            <div>
+              <p className="text-gray-600">Welcome, {user?.name}!</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm mt-2">
+                <p><strong>Email:</strong> {user?.email}</p>
+                <p><strong>Phone:</strong> {user?.phone}</p>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -111,7 +138,11 @@ const LeaderDashboard = () => {
 
       {showUploadProfile && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <UploadImages type="profile" onClose={() => setShowUploadProfile(false)} />
+          <UploadImages 
+            type="profile" 
+            onClose={() => setShowUploadProfile(false)} 
+            onImageUploaded={handleProfileImageUpdate}
+          />
         </div>
       )}
 
