@@ -3,6 +3,11 @@
 const Just = () => {
   const name = "Just Component";
   const id = 12345;
+  const info = {
+    description: "This is a simple React component.",
+    version: "1.0.0"
+  };
+
   return (
     <div>
       <h1>Lorem ipsum dolor sit amet consectetur adipisicing elit. 
@@ -15,6 +20,14 @@ const Just = () => {
       </p>
       <p>Name: {name}</p>
       <p>ID: {id}</p>
+      <p>Description: {info.description}</p>
+      <p>Version: {info.version}</p>
+      <div>
+        <h2>Features of Redux Toolkit:</h2>
+        <ul>
+          <li>Simplified Redux Development</li>
+        </ul>
+      </div>
     </div>
   )
 }
